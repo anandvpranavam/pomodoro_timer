@@ -1,55 +1,41 @@
-const timerEl = document.getElementById('timer');
-const startButtonEl = document.getElementById('start');
-const stopButtonEl = document.getElementById('stop');
-const resetButtonEl = document.getElementById('reset');
+const startEl = document.getElementById("start")
+const stopEl = document.getElementById("stop")
+const resetEl = document.getElementById("reset")
+const timerEl = document.getElementById("timer")
 
-function startTimer(){
-    console.log("start")
-    startTime = Date.now() - elapsedTime;
+let interval
+let timeLeft = 1500;
 
-    timerInterval = setInterval(() => {
-        elapsedTime = Date.now() - startTime;
-        timerEl.textContent = formatTime(elapsedTime);
-    }, 10)
-    startButtonEl.disabled = true;
-    stopButtonEl.disabled = false;
+function updateTimer(){
+    let minutes = Math.floor(timeLeft/60);
+    let seconds = timeLeft % 60;
+    let formattedTime = `${minutes.toString().padStart(2, "0")}: 
+    ${seconds.toString().padStart(2, "0")}`;
+    timerEl.innerHTML = formattedTime
 }
 
-function formatTime(elapsedTime){
-    const milliseconds = Math.floor((elapsedTime % 1000)/10);
-    const seconds = Math.floor((elapsedTime % (1000*60))/1000);
-    const minutes = Math.floor((elapsedTime % (1000*60*60))/(1000*60));
-    const hours = Math.floor(elapsedTime/(1000*60*60));
-    return (
-    (hours ? (hours > 9 ? hours : "0" + hours) : "00")
-    + ":" + 
-    (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00")
-    + ":" + 
-    (seconds ? (seconds > 9 ? seconds : "0" + seconds) : "00")
-    + "." + 
-    (milliseconds > 9 ?  milliseconds : "0" + milliseconds)
-    );
+function startTImer(){
+    interval = setInterval(()=> {
+        timeLeft --;
+        updateTimer();
+        if(timeLeft === 0) {
+            clearInterval(interval)
+            alert("Time's Up!");
+            timeLeft =1500;
+        }
+    
+    }, 1000)
 }
-function stopTimer(){
-    console.log("stop")
-    clearInterval(timerInterval);
-    startButtonEl.disabled = false;
-    stopButtonEl.disabled = true;
+function stopTImer(){
+    clearInterval(interval);
+
 }
-function resetTimer(){
-    console.log("reset")
-    clearInterval(timerInterval);
-    elapsedTime = 0;
-    timerEl.textContent = "00:00:00";
-    startButtonEl.disabled = false;
-    stopButtonEl.disabled = true;
+function resetTImer(){
+    clearInterval(interval)
+    timeLeft=1500;
+    updateTimer();
 }
 
-let startTime = 0;
-let elapsedTime = 0;
-let timerInterval;
-
-
-startButtonEl.addEventListener("click", startTimer)
-stopButtonEl.addEventListener("click", stopTimer)
-resetButtonEl.addEventListener("click", resetTimer)
+startEl.addEventListener("click", startTImer)
+stopEl.addEventListener("click", stopTImer)
+resetEl.addEventListener("click", resetTImer)
